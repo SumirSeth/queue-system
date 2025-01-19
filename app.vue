@@ -27,10 +27,14 @@
     <Transition name="fade" mode="out-in">
       <div key="intro" class="flex flex-col items-center justify-center h-screen" v-if="intro">
         <h1 class="text-6xl font-bold">
-          <TextGenerateEffect words="Queue System" :duration=0.5 :delay=500 class=""/>
+          <ClientOnly>
+            <TextGenerateEffect words="Queue System" :duration=0.5 :delay=500 class=""/>
+          </ClientOnly>
         </h1>
         <p class="text-xl">
-          <TextGenerateEffect words="A backend visualised by frontend project." :duration=0.1 :delay=1000 :filter=false class="" />
+          <ClientOnly>
+            <TextGenerateEffect words="A backend visualised by frontend project." :duration=0.1 :delay=1000 :filter=false class="" />
+          </ClientOnly>
         </p>
       </div>
       <div key="main" v-else class="">

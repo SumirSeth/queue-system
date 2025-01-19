@@ -1,5 +1,7 @@
 const store = new Map<string, any>();
 
+
+
 export const set = (key: string, value: any): void => {
     store.set(key, value);
 };

@@ -1,13 +1,15 @@
-import { get, set, del, keys } from './index';
+import { get, del, keys } from './index';
 
 
-const queueSize = () => {
-    const allKeys = keys();
-    return allKeys.length;
+const queueSize = (): number => {
+    return keys().length;
 }
 
 const getOldestTask = () => {
     const allKeys = keys();
+    if (allKeys.length === 0) {
+        return null;
+    }
     const oldestKey = allKeys[0];
     const taskData = get(oldestKey);
     return {
@@ -17,8 +19,7 @@ const getOldestTask = () => {
 }
 
 const clearQueue = () => {
-    const allKeys = keys();
-    allKeys.forEach((key) => del(key));
+    keys().forEach((key) => del(key));
 }
 
 export {
