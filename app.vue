@@ -32,19 +32,19 @@
           <TextGenerateEffect words="A backend visualised by frontend project." :duration=0.1 :delay=1000 :filter=false class="" />
         </p>
       </div>
-      
-      <div key="main" v-else class="flex flex-col items-center justify-center">
-        <p class="text-5xl font-thin">Queue System with custom Redis Implementation</p>
+      <div key="main" v-else class="">
+        <div class="flex flex-col items-center justify-center">
+          <p class="text-5xl font-bold">Queue System</p>
+          <p class="text-2xl font-thin">with custom Redis Implementation</p>
+        </div>
+        <div>
+          <p>efwefwe</p>
+        </div>
       </div>
     </Transition>
     <!-- End of Intro section -->
 
 
-    <!-- Main section -->
-    <div v-if="!intro">
-      <p>efwefwe</p>
-
-    </div>
 
 
 
