@@ -1,5 +1,13 @@
 <template>
   <div class="bg-black min-h-screen text-white font-[Geist]">
+    <Icon class="fixed top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
+    <div v-if="tooltip" class="fixed flex flex-col h-screen w-screen items-center justify-center backdrop-blur-lg text-white rounded-md p-2 text-sm">
+      <button>
+        <Icon name="line-md:close-circle-filled" class="fixed top-3 right-6 size-9" @click="tooltip = !tooltip" />
+      </button>
+      <p class="text-xl shadow-xl">This project is a visualisation of a queue system using Redis as the backend. The redis implementation is custom and does not use any external libraries.</p>
+      <p class="text-xl shadow-xl"></p>
+    </div>
     <Transition name="fade">
       <div class="flex flex-col items-center justify-center h-screen" v-if="intro">
         <h1 class="text-6xl font-bold">
@@ -42,6 +50,7 @@
 <script setup lang="ts">
 
 const intro = ref(true)
+const tooltip = ref(false)
 
 onMounted(() => {
   setTimeout(() => {
