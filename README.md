@@ -1,11 +1,17 @@
 # Queue System  
 (A backend visualised by frontend project.)
 
+
+## Features 🎉 
+- 💻 Custom Redis Implementation
+- 🧑‍🤝‍🧑 Queue System Visualization
+
+
 ## 🚀 Getting Started
 
 1. Clone the repository
 ```sh
-git clone https://github.com/your-username/project-name.git
+git clone https://github.com/sumirseth/queue-system.git 
 ```
 2. Install NPM packages
 ```sh
@@ -16,29 +22,10 @@ npm install
 npm run dev
 ```
 
-## 🧪 Commands
-
-| Command                | Description                                 |
-|------------------------|---------------------------------------------|
-| `npm run dev`          | Starts the development server.             |
-| `npm run build`        | Builds the application for production.      |
-| `npm run generate`     | Generates static files for production.      |
-| `npm run preview`      | Preview the production build locally.       |
-| `npm run typecheck`    | Runs TypeScript type-checking.              |
-| `npm run lint`         | Runs ESLint.                                |
-| `npm run test`         | Runs the test suite.                        |
-| `npm run coverage`     | Runs the test suite with coverage.          |
-| `npm run postinstall`  | Post-install script.                        |
-
-
-## Author👨‍💻
-[Sumir Seth](https://github.com/sumirseth)
-
-
 ## 📝 License
 
 Copyright © 2025 [Sumir Seth](https://github.com/sumirseth).<br />
-This project is [MIT](https://github.com/your-username/project-name/blob/master/LICENSE) licensed.
+This project is [GPL-3.0](https://github.com/sumirseth/queue-system/blob/master/LICENSE) licensed.
 
 ***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+_Created with ❤️ by Sumir Seth._
