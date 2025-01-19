@@ -1,4 +1,8 @@
 <template>
+  <Link rel="icon" href="/favicon.png" />
+  <Title>Queue System</Title>
+  <Meta name="description" content="Queue System with custom Redis Implementation" />
+
   <div class="bg-black min-h-screen text-white font-[Geist]">
     <Icon class="fixed top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
     <div v-if="tooltip" class="fixed flex flex-col h-screen w-screen items-center justify-center backdrop-blur-lg text-white rounded-md p-2 text-sm">
