@@ -1,75 +1,44 @@
-# Nuxt Minimal Starter
+# Queue System  
+(A backend visualised by frontend project.)
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## 🚀 Getting Started
 
-## Setup
-
-Make sure to install dependencies:
-
-```bash
-# npm
+1. Clone the repository
+```sh
+git clone https://github.com/your-username/project-name.git
+```
+2. Install NPM packages
+```sh
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+3. Start the development server
+```sh
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## 🧪 Commands
 
-Build the application for production:
+| Command                | Description                                 |
+|------------------------|---------------------------------------------|
+| `npm run dev`          | Starts the development server.             |
+| `npm run build`        | Builds the application for production.      |
+| `npm run generate`     | Generates static files for production.      |
+| `npm run preview`      | Preview the production build locally.       |
+| `npm run typecheck`    | Runs TypeScript type-checking.              |
+| `npm run lint`         | Runs ESLint.                                |
+| `npm run test`         | Runs the test suite.                        |
+| `npm run coverage`     | Runs the test suite with coverage.          |
+| `npm run postinstall`  | Post-install script.                        |
 
-```bash
-# npm
-npm run build
 
-# pnpm
-pnpm build
+## Author👨‍💻
+[Sumir Seth](https://github.com/sumirseth)
 
-# yarn
-yarn build
 
-# bun
-bun run build
-```
+## 📝 License
 
-Locally preview production build:
+Copyright © 2025 [Sumir Seth](https://github.com/sumirseth).<br />
+This project is [MIT](https://github.com/your-username/project-name/blob/master/LICENSE) licensed.
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_

@@ -4,11 +4,12 @@
   <Link rel="icon" href="/favicon.png" />
   <Title>Queue System</Title>
   <Meta name="description" content="Queue System with custom Redis Implementation" />
+  <Body class="bg-black text-white font-[Geist]"/>
   <!-- End of Meta section -->
 
 
   <!-- Main div -->
-  <div class="bg-black min-h-screen text-white font-[Geist]">
+  <div class="bg-black min-h-screen text-white">
 
     <!--FIXED BLOCKS:  Icons - Help and Close with Tooltip -->
     <Icon class="fixed top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
@@ -33,7 +34,7 @@
         </p>
       </div>
       <div key="main" v-else class="">
-        <div class="flex flex-col items-center justify-center">
+        <div class="flex flex-col items-center justify-center p-4 m-4">
           <p class="text-5xl font-bold">Queue System</p>
           <p class="text-2xl font-thin">with custom Redis Implementation</p>
         </div>
