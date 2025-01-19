@@ -1,5 +1,5 @@
 import { get, keys } from '../../redis';
-import { getOldestTask } from '../../redis/utils';
+import { getOldestTask, queueSize } from '../../redis/utils';
 
 
 export default defineEventHandler(() => {
@@ -7,5 +7,5 @@ export default defineEventHandler(() => {
   const allTasks = allKeys.map((key) => ({ key, data: get(key) }));
   const oldestTask = getOldestTask();
 
-  return { success: true, tasks: allTasks, oldestTask: oldestTask };
+  return { success: true, tasks: allTasks, oldestTask: oldestTask, queueSize: queueSize() };
 });
