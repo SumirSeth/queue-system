@@ -44,7 +44,11 @@
           <p class="text-2xl font-thin">with custom Redis Implementation</p>
         </div>
         <div>
-          {{ tasks }}, {{ queueSize }}, {{ oldestTask }}
+          <!-- {{ tasks }} -->
+          Queue Size: {{ queueSize }}<br>
+          Oldest Task: {{ oldestTask }}<br>
+          Health Status: {{ healthStatus }}
+          <br>
           <B text="Add Bundle" @click="addTask" />
           <B text="Fetch Tasks" @click="fetchTasks" />
           <!-- fetch tasks from api does not need a button -->
@@ -52,8 +56,7 @@
           <B text="Health Check" @click="healthCheck" />
           <B text="Clear Queue" @click="clearQueue" />
           <B text="stats" />
-          {{ healthStatus }}
-          {{ batchSize }}
+          <br>
           <input type="number" v-model="batchSize" class="border border-gray-400 rounded-md p-2 bg-gray-950" />
         </div>
 
@@ -84,13 +87,7 @@
 
 
 <script setup lang="ts">
-
-
-
-
-
-
-
+const count = ref(0)
 const intro = ref(true)
 const tooltip = ref(false)
 
@@ -135,8 +132,8 @@ const fetchTasks = async () => {
 //add task
 const addTask = async () => {
   const taskData = {
-    taskId: Date.now().toString(),
-    taskData: `This is a task with id ${Date.now().toString()}`
+    taskId: count.value,
+    taskData: `Sample Data with id: ${count.value}`
   }
   try {
     await $fetch('/api/queue/add', {
@@ -144,6 +141,7 @@ const addTask = async () => {
       body: taskData
     })
     fetchTasks()
+    count.value++
   } catch (error) {
     console.error(error)
   }
