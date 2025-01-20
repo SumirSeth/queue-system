@@ -168,7 +168,7 @@
 
 
 
-
+    <p class="font-thin text-sm opacity-65 fixed bottom-0 left-0 p-2">made with ❤️ by <a href="https://github.com/sumirseth" target="_blank" class="underline">sumir</a></p>
   </div>
 </template>
 
