@@ -12,7 +12,7 @@
   <div class="bg-black min-h-screen text-white">
 
     <!--FIXED BLOCKS:  Icons - Help and Close with Tooltip -->
-    <Icon class="absolute top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
+    <Icon class="absolute top-3 right-3 hover:cursor-help size-8 lg:size-10"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
     <div v-if="tooltip" class="absolute z-50 flex flex-col h-screen w-screen items-center justify-center backdrop-blur-xl brightness-125">
       <button>
       <Icon name="line-md:close-circle-filled" class="fixed top-3 right-6 size-8" @click="tooltip = !tooltip" />
@@ -122,11 +122,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
               <div>
                 <div class="flex flex-wrap justify-center md:justify-start">
-                  <B text="Add Bundle" @click="addTask" />
+                  <Button class="px-4 py-2 m-2 rounded-md bg-white text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="addTask()" :loading="addPsing" :disabled="addPsing"><Icon v-if="addPsing" name="line-md:loading-alt-loop" class="w-4 h-4" /> Add Bundle</Button>
                   <B text="Clear Queue" @click="clearQueue" bg="bg-red-500" />
                 </div>
                 <div class="flex flex-col items-center md:items-start">
-                  <Button class="px-4 py-2 m-2 rounded-md bg-green-400 text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="processTasks()" :loading="psing" :disabled="queueSize === 0"><Icon v-if="psing && !allpsing" name="line-md:loading-alt-loop" class="w-6 h-6" /> Process Bundle</Button>
+                  <Button class="px-4 py-2 m-2 rounded-md bg-green-400 text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="processTasks()" :loading="psing" :disabled="queueSize === 0"><Icon v-if="psing && !allpsing" name="line-md:loading-alt-loop" class="w-4 h-4" /> Process Bundle</Button>
                   <label for="batchSize" class="sr-only">Batch Size</label>
                   <input 
                     id="batchSize" 
@@ -137,7 +137,7 @@
                   />
                 </div>
                 <div class="text-center md:text-left">
-                  <Button class="px-4 py-2 m-2 rounded-md bg-yellow-400 text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="processAllTasks()" :loading="psing" :disabled="queueSize === 0"><Icon v-if="psing && allpsing" name="line-md:loading-alt-loop" class="w-6 h-6" /> Process All Bundle</Button>
+                  <Button class="px-4 py-2 m-2 rounded-md bg-yellow-400 text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="processAllTasks()" :loading="psing" :disabled="queueSize === 0"><Icon v-if="psing && allpsing" name="line-md:loading-alt-loop" class="w-4 h-4" /> Process All Bundle</Button>
                 </div>
               </div>
               
@@ -178,6 +178,7 @@ const containerWidth = ref(0)
 
 const psing = ref(false)
 const allpsing = ref(false)
+const addPsing = ref(false)
 const count = ref(0)
 const intro = ref(true)
 const tooltip = ref(false)
@@ -229,6 +230,7 @@ const addTask = async () => {
     taskData: `Sample Data with id: ${count.value}`
   }
   try {
+    addPsing.value = true
     await $fetch('/api/queue/add', {
       method: 'POST',
       body: taskData
@@ -240,6 +242,7 @@ const addTask = async () => {
     await new Promise(resolve => setTimeout(resolve, 100));
     await healthCheck()
     count.value++
+    addPsing.value = false
   } catch (error) {
     console.error(error)
   }
