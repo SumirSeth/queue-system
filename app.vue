@@ -44,13 +44,25 @@
           <p class="text-2xl font-thin">with custom Redis Implementation</p>
         </div>
         <div>
-          <B text="Add Bundle" />
+          {{ tasks }}, {{ queueSize }}, {{ oldestTask }}
+          <B text="Add Bundle" @click="addTask" />
+          <B text="Fetch Tasks" @click="fetchTasks" />
           <!-- fetch tasks from api does not need a button -->
-          <B text="Process Bundle" bg="bg-green-400" />
-          <B text="Health Check" />
-          <B text="Clear Queue" />
+          <B text="Process Bundle" bg="bg-green-400" @click="processTasks" />
+          <B text="Health Check" @click="healthCheck" />
+          <B text="Clear Queue" @click="" />
           <B text="stats" />
+          {{ healthStatus }}
+          {{ batchSize }}
         </div>
+
+        <div class="conveyer-belt">
+          <div class="bundle" v-for="task in tasks" :key="task.key">
+            {{ task.data }}
+          </div>
+        </div>
+
+
       </div>
     </Transition>
     <!-- End of Intro section -->
@@ -67,6 +79,12 @@
 
 <script setup lang="ts">
 
+
+
+
+
+
+
 const intro = ref(true)
 const tooltip = ref(false)
 
@@ -74,13 +92,14 @@ onMounted(() => {
   setTimeout(() => {
     intro.value = false
   }, 3500)
+  fetchTasks()
 })
 
 //main logic
 const tasks = ref<{ key: string; data: any; }[]>([])
 const queueSize = ref(0)
 const oldestTask = ref()
-const batchSize = ref()
+const batchSize = ref(-1)
 
 type healthStatus = {
   status: number,
@@ -127,18 +146,32 @@ const addTask = async () => {
 //process tasks
 const processTasks = async () => {
   try {
-    const response = await $fetch('/api/queue/process', {
-      method: 'POST',
-      body: {
-        batchSize: batchSize.value
+
+    if (batchSize.value === -1) {
+      while (queueSize.value !== 0) {
+        const response = await $fetch('/api/queue/process', {
+          method: 'POST',
+          body: {
+            batchSize: 1
+          }
+        })
+        fetchTasks()
       }
-    })
-    fetchTasks()
+    } else { 
+      const response = await $fetch('/api/queue/process', {
+        method: 'POST',
+        body: {
+          batchSize: batchSize.value
+        }
+      })
+      fetchTasks()
+    }
   } catch (error) {
     console.error(error)
   }
 }
 
+// health check
 const healthCheck = async () => {
   try {
     const response = await $fetch('/api/health')
@@ -150,7 +183,19 @@ const healthCheck = async () => {
     healthStatus.value = response.data
 
   } catch (error) {
-    
+    console.log(error)
+  }
+}
+
+//clear queue
+const clearQueue = async () => {
+  try {
+    await $fetch('/api/queue/clear', {
+      method: 'POST'
+    })
+    fetchTasks()
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -182,6 +227,45 @@ const healthCheck = async () => {
 </style>
 
 <style>
+
+.conveyor-belt {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: #444;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 2px solid #333;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.bundle {
+  min-width: 100px;
+  height: 60px;
+  margin: 0 10px;
+  background-color: #1e90ff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  animation: move-left 5s linear infinite;
+}
+
+@keyframes move-left {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+
+
 ::-webkit-scrollbar {
   width: 6px;
 }
