@@ -56,11 +56,16 @@
           {{ batchSize }}
         </div>
 
-        <div class="conveyer-belt">
-          <div class="bundle" v-for="task in tasks" :key="task.key">
-            {{ task.data }}
-          </div>
-        </div>
+        <div class="conveyor-belt">
+    <div
+      class="bundle"
+      v-for="(task, index) in tasks"
+      :key="task.key"
+      :style="{ left: `${index * 120}px` }"
+    >
+      {{ task.data }}
+    </div>
+  </div>
 
 
       </div>
@@ -227,23 +232,24 @@ const clearQueue = async () => {
 </style>
 
 <style>
-
 .conveyor-belt {
   position: relative;
-  width: 100%;
+  width: 80%;
   height: 100px;
+  margin: 20px auto;
   background: #444;
+  border: 2px solid #333;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  overflow: hidden;
-  border: 2px solid #333;
+  justify-content: flex-start;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .bundle {
-  min-width: 100px;
+  position: absolute;
+  width: 100px;
   height: 60px;
-  margin: 0 10px;
   background-color: #1e90ff;
   color: #fff;
   font-size: 14px;
@@ -252,16 +258,7 @@ const clearQueue = async () => {
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  animation: move-left 5s linear infinite;
-}
-
-@keyframes move-left {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(-100%);
-  }
+  transition: left 0.3s ease;
 }
 
 

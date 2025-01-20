@@ -2,7 +2,7 @@
 (A backend visualised by frontend project.)
 
 
-## Features 🎉 
+## 🎉 Features  
 - 💻 Custom Redis Implementation
 - 🧑‍🤝‍🧑 Queue System Visualization
 
