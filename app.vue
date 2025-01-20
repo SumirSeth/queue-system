@@ -151,15 +151,16 @@ const addTask = async () => {
 //process tasks
 const processTasks = async () => {
   try {
-
     if (batchSize.value === -1) {
       while (queueSize.value !== 0) {
-        const response = await $fetch('/api/queue/process', {
-          method: 'POST',
-          body: {
-            batchSize: 1
-          }
-        })
+        const { data } = await useAsyncData(
+          `process-task-${Date.now()}`,
+          () => $fetch('/api/queue/process', {
+            method: 'POST',
+            body: { batchSize: 1 }
+          }),
+          { lazy: true }
+        )
         fetchTasks()
       }
     } else { 
