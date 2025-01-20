@@ -13,7 +13,7 @@
 
     <!--FIXED BLOCKS:  Icons - Help and Close with Tooltip -->
     <Icon class="fixed top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
-    <div v-if="tooltip" class="fixed flex flex-col h-screen w-screen items-center justify-center backdrop-blur-lg">
+    <div v-if="tooltip" class="fixed z-50 flex flex-col h-screen w-screen items-center justify-center backdrop-blur-lg">
       <button>
         <Icon name="line-md:close-circle-filled" class="fixed top-3 right-6 size-8" @click="tooltip = !tooltip" />
       </button>
@@ -47,16 +47,99 @@
 
           <div class="flex flex-col items-center justify-center min-h-[75vh]">
 
-            <p>Queue Size: {{ queueSize }}</p>
-            <div class="conveyor-belt">
+            <p class="text-xl">Queue Size: {{ queueSize }}</p>
+            <!-- <div class="conveyor-belt">
               <div class="bundle" v-for="(task, index) in tasks" :key="task.key" :style="{ right: `${index * 120}px` }">
                   {{ task.data }}
               </div>
             </div>
 
+            <div class="c-belt">
+              <div class="c-belt-item" v-for="(task, index) in tasks" :key="task.key" :style="{ right: `${index * 120}px` }">
+                  {{ task.key }}
+              </div>
+            </div>
+
+            <div class="cb">
+              <div 
+                v-for="(task, index) in tasks" 
+                :key="task.key" 
+                :style="{
+                  transform: `rotate(${(360 / tasks.length) * index}deg) translateX(100px)`
+                }"
+                class="cb-item"
+              >
+                {{ task.data }}
+              </div>
+            </div>
+
+            <div class="conveyor-container">
+              <div class="conveyor-track">
+                <div 
+                  v-for="(task, index) in tasks" 
+                  :key="task.key" 
+                  :style="{ transform: `translateX(${-index * 120}px)` }"
+                  class="task-item"
+                >
+                  {{ task.data }}
+                </div>
+              </div>
+            </div>
+
+            <div class="queue-system">
+              <div class="belt-container">
+                <div class="gear left"></div>
+                <div class="belt-track">
+                  <div 
+                    v-for="(task, index) in tasks" 
+                    :key="task.key" 
+                    :style="{ transform: `translateX(${-index * 120}px)` }"
+                    class="task-bundle"
+                  >
+                    {{ task.data }}
+                  </div>
+                </div>
+                <div class="gear right"></div>
+              </div>
+            </div> -->
+
+            <div class="lg:w-2/3 w-5/6 h-[200px] mx-auto my-8 relative bg-[#1a1a1a] rounded-xl shadow-2xl">
+              <!-- Left Gear -->
+              <div :class="['absolute w-[60px] h-[60px] bg-transparent rounded-full top-1/3 -left-[35px] z-10', `${psing? 'animate-spin': ''}`]">
+                <Icon name="mynaui:wheel-solid" class="w-16 h-16" />
+              </div>
+              
+              <!-- Scrollable Container -->
+              <div class="sc overflow-x-auto h-full rounded-xl">
+                <!-- Track with Tasks -->
+                <div 
+                  :class="['h-full bg-[repeating-linear-gradient(45deg,#2a2a2a_0px,#2a2a2a_10px,#333_10px,#333_20px)]' , `${psing? 'animate-moveBelt': ''}`, 'relative']"
+                  :style="{
+                    width: `${tasks.length * (containerWidth>740? 140 : 110)}px`,
+                    minWidth: '100%'
+                  }"
+                >
+                  <div 
+                    v-for="(task, index) in tasks" 
+                    :key="task.key" 
+                    :style="{
+                      transform: `translateX(${index * (containerWidth>740? 140 : 110)}px)`
+                    }"
+                    class="absolute top-1/4 -translate-y-1/2 bg-blue-600 text-white lg:text-xl text-sm p-4 rounded-lg lg:w-28 lg:h-28 text-center shadow-lg transition-transform duration-500 ease-in-out flex justify-center items-center"
+                  >
+                    Bundle {{ task.key }}
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Right Gear -->
+              <div :class="['absolute w-[60px] h-[60px] bg-transparent rounded-full top-1/3 -right-[30px] z-10', `${psing? 'animate-spin': ''}`]">
+                <Icon name="mynaui:wheel-solid" class="w-16 h-16" />
+              </div>
+            </div>
+
             <div>
               <!-- {{ tasks }} -->
-              Queue Size: {{ queueSize }}<br>
               Oldest Task: {{ oldestTask }}<br>
               Health Status: {{ healthStatus }}
               <br>
@@ -69,9 +152,7 @@
               <!-- <B text="stats" /> -->
               <br>
               <input type="number" v-model="batchSize" class="border border-gray-400 rounded-md p-2 bg-gray-950" />
-            </div>  
-
-
+            </div>
           </div>
 
        
@@ -91,6 +172,12 @@
 
 
 <script setup lang="ts">
+const containerWidth = ref(0)
+
+onMounted(() => {
+  containerWidth.value = window.innerWidth
+})
+const psing = ref(false)
 const count = ref(0)
 const intro = ref(true)
 const tooltip = ref(false)
@@ -117,7 +204,7 @@ type healthStatus = {
     redisConnectionStatus: boolean
   },
   error?: Error
-}
+};
 const healthStatus = ref()
 
 //fetch tasks
@@ -154,6 +241,7 @@ const addTask = async () => {
 //process tasks
 const processTasks = async () => {
   try {
+      psing.value = true
       console.log("process tasks")
       const response = await $fetch('/api/queue/process', {
         method: 'POST',
@@ -162,6 +250,7 @@ const processTasks = async () => {
         }
       })
       fetchTasks()
+      psing.value = false
     
   } catch (error) {
     console.error(error)
@@ -187,11 +276,13 @@ const processAllTasksBackend = async () => {
 
 const processAllTasks = async () => {
   try {
+    psing.value = true
     while (queueSize.value > 0) {
       console.log('processing all tasks')
       await new Promise(resolve => setTimeout(resolve, 2500));
       await processAllTasksBackend()
     }
+    psing.value = false
   } catch (error) {
     console.error('Failed to process all tasks:', error);
   }
@@ -232,6 +323,8 @@ const clearQueue = async () => {
 
 
 <style scoped>
+
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
@@ -250,51 +343,42 @@ const clearQueue = async () => {
 .fade-move {
   transition: transform 0.5s ease;
 }
+.sc::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+}
+
+.sc::-webkit-scrollbar-track {
+  background: transparent;
+  width: 0px;
+}
+
+.sc::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+}
+
+
 </style>
 
 <style>
-.conveyor-belt {
-  position: relative;
-  width: 80%;
-  height: 100px;
-  margin: 20px auto;
-  background: #242424;
-  border: 3px solid #ebebeb;
-  border-radius: 15px;
-  overflow:auto;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-}
+* {
+  @keyframes moveBelt {
+    from { background-position: 0 0; }
+    to { background-position: -200px 0; }
+  }
 
-.bundle {
-  position: absolute;
-  width: 100px;
-  height: 60px;
-  background-color: #cf9008;
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  transition: left 0.3s ease;
-}
+  body::-webkit-scrollbar {
+    width: 6px;
+  }
 
+  body::-webkit-scrollbar-track {
+    background: #000000;
+  }
 
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #313131;
-  border-radius: 3px;
+  body::-webkit-scrollbar-thumb {
+    background: #313131;
+    border-radius: 3px;
+  }
 }
 </style>

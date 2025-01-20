@@ -52,6 +52,11 @@ export default {
       },
       fontFamily: {
         custom: ['Geist']
+      },
+
+      animation: {
+        'moveBelt': 'moveBelt 10s linear infinite',
+        'spin': 'spin 4s linear infinite',
       }
     },
   },
