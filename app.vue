@@ -79,7 +79,7 @@
 
             <div class="w-full h-[200px] mx-auto my-8 relative bg-[#1a1a1a] rounded-xl shadow-2xl">
               <!-- Left Gear -->
-              <div :class="['absolute w-[60px] h-[60px] bg-transparent rounded-full top-1/3 -left-[35px] z-10', `${psing? 'animate-spin': ''}`]">
+              <div :class="['absolute w-[60px] h-[60px] bg-transparent rounded-full top-1/3 -left-[35px] z-10 opacity-60', `${psing? 'animate-spin': ''}`]">
                 <Icon name="mynaui:wheel-solid" class="w-16 h-16" />
               </div>
               
@@ -93,21 +93,28 @@
                     minWidth: '100%'
                   }"
                 >
-                  <div 
-                    v-for="(task, index) in tasks" 
-                    :key="task.key" 
-                    :style="{
-                      transform: `translateX(${index * (containerWidth>740? 140 : 110)}px)`
-                    }"
-                    class="absolute top-1/4 -translate-y-1/2 bg-blue-600 text-white lg:text-xl text-sm p-4 rounded-lg lg:w-28 lg:h-28 text-center shadow-lg transition-transform duration-500 ease-in-out flex justify-center items-center"
+                  <TransitionGroup
+                    name="task"
+                    tag="div"
+                    :css="true"
+                    mode="out-in"
                   >
-                    Bundle {{ task.key }}
-                  </div>
+                    <div 
+                      v-for="(task, index) in tasks" 
+                      :key="task.key" 
+                      :style="{
+                        left: `${index * (containerWidth>740? 140 : 110)}px`
+                      }"
+                      class="absolute top-1/4 bg-blue-600 text-white lg:text-xl text-sm p-4 rounded-lg lg:w-28 lg:h-28 text-center shadow-lg flex justify-center items-center"
+                    >
+                      Bundle {{ task.key }}
+                    </div>
+                  </TransitionGroup>
                 </div>
               </div>
               
               <!-- Right Gear -->
-              <div :class="['absolute w-[40px] md:w-[60px] h-[40px] md:h-[60px] bg-transparent rounded-full top-1/3 -right-[20px] md:-right-[30px] z-10', `${psing? 'animate-spin': ''}`]">
+              <div :class="['absolute w-[40px] md:w-[60px] h-[40px] md:h-[60px] bg-transparent rounded-full top-1/3 -right-[20px] md:-right-[30px] z-10 opacity-60', `${psing? 'animate-spin': ''}`]">
                 <Icon name="mynaui:wheel-solid" class="w-12 md:w-16 h-12 md:h-16" />
               </div>
             </div>
@@ -119,7 +126,7 @@
                   <B text="Clear Queue" @click="clearQueue" bg="bg-red-500" />
                 </div>
                 <div class="flex flex-col items-center md:items-start">
-                  <B text="Process Bundle" bg="bg-green-400" @click="processTasks()" />
+                  <Button class="px-4 py-2 m-2 rounded-md bg-green-400 text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="processTasks()" :loading="psing" :disabled="queueSize === 0"><Icon v-if="psing && !allpsing" name="line-md:loading-alt-loop" class="w-6 h-6" /> Process Bundle</Button>
                   <label for="batchSize" class="sr-only">Batch Size</label>
                   <input 
                     id="batchSize" 
@@ -130,7 +137,7 @@
                   />
                 </div>
                 <div class="text-center md:text-left">
-                  <B text="Process All Bundles" bg="bg-yellow-400" @click="processAllTasks()" />
+                  <Button class="px-4 py-2 m-2 rounded-md bg-yellow-400 text-black disabled:bg-slate-400 disabled:text-gray-700 disabled:cursor-not-allowed" @click="processAllTasks()" :loading="psing" :disabled="queueSize === 0"><Icon v-if="psing && allpsing" name="line-md:loading-alt-loop" class="w-6 h-6" /> Process All Bundle</Button>
                 </div>
               </div>
               
@@ -170,6 +177,7 @@
 const containerWidth = ref(0)
 
 const psing = ref(false)
+const allpsing = ref(false)
 const count = ref(0)
 const intro = ref(true)
 const tooltip = ref(false)
@@ -274,12 +282,14 @@ const processAllTasksBackend = async () => {
 const processAllTasks = async () => {
   try {
     psing.value = true
+    allpsing.value = true
     while (queueSize.value > 0) {
       console.log('processing all tasks')
       await new Promise(resolve => setTimeout(resolve, 2500));
       await processAllTasksBackend()
     }
     psing.value = false
+    allpsing.value = false
   } catch (error) {
     console.error('Failed to process all tasks:', error);
   }
@@ -378,5 +388,49 @@ const clearQueue = async () => {
     background: #313131;
     border-radius: 3px;
   }
+}
+
+@keyframes slideFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.task-enter-active {
+  animation: slideFromRight 0.5s ease-out forwards;
+}
+
+.task-enter-from {
+  position: absolute;
+  right: -100%;
+  opacity: 0;
+}
+
+.task-enter-to {
+  position: absolute;
+  opacity: 1;
+}
+
+.task-move {
+  transition: all 0.5s ease-out;
+}
+
+.task-leave-active {
+  transition: all 0.5s ease-in;
+  position: absolute;
+}
+
+.task-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+body::-webkit-scrollbar {
+  width: 6px;
 }
 </style>
