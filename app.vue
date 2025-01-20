@@ -48,24 +48,25 @@
           <B text="Add Bundle" @click="addTask" />
           <B text="Fetch Tasks" @click="fetchTasks" />
           <!-- fetch tasks from api does not need a button -->
-          <B text="Process Bundle" bg="bg-green-400" @click="batchSize === -1 ? processAllTasks() : processTasks" />
+          <B text="Process Bundle" bg="bg-green-400" @click="batchSize === -1 ? processAllTasks() : processTasks()" />
           <B text="Health Check" @click="healthCheck" />
           <B text="Clear Queue" @click="clearQueue" />
           <B text="stats" />
           {{ healthStatus }}
           {{ batchSize }}
+          <input type="number" v-model="batchSize" class="border border-gray-400 rounded-md p-2 bg-gray-950" />
         </div>
 
         <div class="conveyor-belt">
-    <div
-      class="bundle"
-      v-for="(task, index) in tasks"
-      :key="task.key"
-      :style="{ left: `${index * 120}px` }"
-    >
-      {{ task.data }}
-    </div>
-  </div>
+          <div
+            class="bundle"
+            v-for="(task, index) in tasks"
+            :key="task.key"
+            :style="{ left: `${index * 120}px` }"
+          >
+            {{ task.data }}
+          </div>
+        </div>
 
 
       </div>
@@ -151,6 +152,7 @@ const addTask = async () => {
 //process tasks
 const processTasks = async () => {
   try {
+      console.log("process tasks")
       const response = await $fetch('/api/queue/process', {
         method: 'POST',
         body: {
