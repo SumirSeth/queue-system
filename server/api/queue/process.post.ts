@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
         const {taskData, taskId} = oldestTask;
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await new Promise((resolve) => setTimeout(resolve, 2000));
             console.log(`Processing task ${i + 1}/${tasksToProcess}:`, taskData);
 
             //sara kaam hone ke baaad delete kardo

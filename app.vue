@@ -175,7 +175,7 @@ const processAllTasksBackend = async () => {
           batchSize: 1
         }
       })
-      fetchTasks()
+      await fetchTasks()
     
   } catch (error) {
     console.error(error)
@@ -184,10 +184,14 @@ const processAllTasksBackend = async () => {
 
 
 const processAllTasks = async () => {
-  while (queueSize.value !== 0) {
-    console.log('processing all tasks')
-    await processAllTasksBackend()
-    fetchTasks()
+  try {
+    while (queueSize.value > 0) {
+      console.log('processing all tasks')
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      await processAllTasksBackend()
+    }
+  } catch (error) {
+    console.error('Failed to process all tasks:', error);
   }
 }
 
