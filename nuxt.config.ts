@@ -7,5 +7,4 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon'
   ],
-  ssr: false,
 })
