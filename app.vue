@@ -233,8 +233,12 @@ const addTask = async () => {
       method: 'POST',
       body: taskData
     })
-    fetchTasks()
-    healthCheck()
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await fetchTasks()
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await healthCheck()
     count.value++
   } catch (error) {
     console.error(error)
@@ -252,8 +256,12 @@ const processTasks = async () => {
           batchSize: batchSize.value
         }
       })
-      fetchTasks()
-      healthCheck()
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await fetchTasks()
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await healthCheck()
       psing.value = false
     
   } catch (error) {
@@ -270,7 +278,10 @@ const processAllTasksBackend = async () => {
           batchSize: 1
         }
       })
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
       await fetchTasks()
+      await new Promise(resolve => setTimeout(resolve, 100));
       await healthCheck()
     
   } catch (error) {
@@ -317,8 +328,12 @@ const clearQueue = async () => {
     await $fetch('/api/queue/clear', {
       method: 'GET'
     })
-    fetchTasks()
-    healthCheck()
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await fetchTasks()
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await healthCheck()
   } catch (error) {
     console.error(error)
   }
