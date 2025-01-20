@@ -39,38 +39,42 @@
         </p>
       </div>
       <div key="main" v-else class="">
-        <div class="flex flex-col items-center justify-center p-4">
+        <div class="flex flex-col items-center justify-center p-4 pt-10">
           <p class="text-5xl font-bold">Queue System</p>
           <p class="text-2xl font-thin">with custom Redis Implementation</p>
         </div>
-        <div>
-          <!-- {{ tasks }} -->
-          Queue Size: {{ queueSize }}<br>
-          Oldest Task: {{ oldestTask }}<br>
-          Health Status: {{ healthStatus }}
-          <br>
-          <B text="Add Bundle" @click="addTask" />
-          <B text="Fetch Tasks" @click="fetchTasks" />
-          <!-- fetch tasks from api does not need a button -->
-          <B text="Process Bundle" bg="bg-green-400" @click="batchSize === -1 ? processAllTasks() : processTasks()" />
-          <B text="Health Check" @click="healthCheck" />
-          <B text="Clear Queue" @click="clearQueue" />
-          <B text="stats" />
-          <br>
-          <input type="number" v-model="batchSize" class="border border-gray-400 rounded-md p-2 bg-gray-950" />
-        </div>
+      
 
-        <div class="conveyor-belt">
-          <div
-            class="bundle"
-            v-for="(task, index) in tasks"
-            :key="task.key"
-            :style="{ left: `${index * 120}px` }"
-          >
-            {{ task.data }}
+          <div class="flex flex-col items-center justify-center min-h-[75vh]">
+
+            <p>Queue Size: {{ queueSize }}</p>
+            <div class="conveyor-belt">
+              <div class="bundle" v-for="(task, index) in tasks" :key="task.key" :style="{ right: `${index * 120}px` }">
+                  {{ task.data }}
+              </div>
+            </div>
+
+            <div>
+              <!-- {{ tasks }} -->
+              Queue Size: {{ queueSize }}<br>
+              Oldest Task: {{ oldestTask }}<br>
+              Health Status: {{ healthStatus }}
+              <br>
+              <B text="Add Bundle" @click="addTask" />
+              <!-- <B text="Fetch Tasks" @click="fetchTasks" /> -->
+              <!-- fetch tasks from api does not need a button -->
+              <B text="Process Bundle" bg="bg-green-400" @click="batchSize === -1 ? processAllTasks() : processTasks()" />
+              <B text="Health Check" @click="healthCheck" />
+              <B text="Clear Queue" @click="clearQueue" />
+              <!-- <B text="stats" /> -->
+              <br>
+              <input type="number" v-model="batchSize" class="border border-gray-400 rounded-md p-2 bg-gray-950" />
+            </div>  
+
+
           </div>
-        </div>
 
+       
 
       </div>
     </Transition>
@@ -254,9 +258,10 @@ const clearQueue = async () => {
   width: 80%;
   height: 100px;
   margin: 20px auto;
-  background: #444;
-  border: 2px solid #333;
-  overflow: hidden;
+  background: #242424;
+  border: 3px solid #ebebeb;
+  border-radius: 15px;
+  overflow:auto;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -267,7 +272,7 @@ const clearQueue = async () => {
   position: absolute;
   width: 100px;
   height: 60px;
-  background-color: #1e90ff;
+  background-color: #cf9008;
   color: #fff;
   font-size: 14px;
   font-weight: bold;

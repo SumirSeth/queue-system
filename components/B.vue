@@ -1,5 +1,5 @@
 <template>
-    <button :class="[props.bg, props.txt]" class="px-4 py-2 rounded-md">
+    <button :class="[props.bg, props.txt,props.cls, 'px-4 py-2 rounded-md', ]">
       {{ props.text }}
     </button>
 </template>
@@ -10,11 +10,13 @@ const props = withDefaults(
     text: string,
     bg?: string,
     txt?: string,
+    cls?: string
   }>(),
   {
     text: 'Button',
     bg: 'bg-white',
-    txt: 'text-black'
+    txt: 'text-black',
+    cls: ''
   }
 )
 </script>
