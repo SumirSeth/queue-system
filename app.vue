@@ -48,7 +48,7 @@
           <B text="Add Bundle" @click="addTask" />
           <B text="Fetch Tasks" @click="fetchTasks" />
           <!-- fetch tasks from api does not need a button -->
-          <B text="Process Bundle" bg="bg-green-400" @click="processTasks" />
+          <B text="Process Bundle" bg="bg-green-400" @click="batchSize === -1 ? processAllTasks() : processTasks" />
           <B text="Health Check" @click="healthCheck" />
           <B text="Clear Queue" @click="clearQueue" />
           <B text="stats" />
@@ -151,19 +151,6 @@ const addTask = async () => {
 //process tasks
 const processTasks = async () => {
   try {
-    if (batchSize.value === -1) {
-      while (queueSize.value !== 0) {
-        const { data } = await useAsyncData(
-          `process-task-${Date.now()}`,
-          () => $fetch('/api/queue/process', {
-            method: 'POST',
-            body: { batchSize: 1 }
-          }),
-          { lazy: true }
-        )
-        fetchTasks()
-      }
-    } else { 
       const response = await $fetch('/api/queue/process', {
         method: 'POST',
         body: {
@@ -171,9 +158,34 @@ const processTasks = async () => {
         }
       })
       fetchTasks()
-    }
+    
   } catch (error) {
     console.error(error)
+  }
+}
+
+const processAllTasksBackend = async () => {
+  try {
+      const response = await $fetch('/api/queue/process', {
+        method: 'POST',
+        body: {
+          // batchSize: batchSize.value
+          batchSize: 1
+        }
+      })
+      fetchTasks()
+    
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+const processAllTasks = async () => {
+  while (queueSize.value !== 0) {
+    console.log('processing all tasks')
+    await processAllTasksBackend()
+    fetchTasks()
   }
 }
 
