@@ -50,7 +50,7 @@
           <!-- fetch tasks from api does not need a button -->
           <B text="Process Bundle" bg="bg-green-400" @click="processTasks" />
           <B text="Health Check" @click="healthCheck" />
-          <B text="Clear Queue" @click="" />
+          <B text="Clear Queue" @click="clearQueue" />
           <B text="stats" />
           {{ healthStatus }}
           {{ batchSize }}
@@ -191,7 +191,7 @@ const healthCheck = async () => {
 const clearQueue = async () => {
   try {
     await $fetch('/api/queue/clear', {
-      method: 'POST'
+      method: 'GET'
     })
     fetchTasks()
   } catch (error) {
