@@ -1,5 +1,5 @@
 <template>
-    <button :class="[props.bg, props.txt,props.cls, 'px-4 py-2 rounded-md', ]">
+    <button :class="[props.bg, props.txt,props.cls, 'px-4 py-2 m-2 rounded-md', ]">
       {{ props.text }}
     </button>
 </template>

@@ -12,14 +12,44 @@
   <div class="bg-black min-h-screen text-white">
 
     <!--FIXED BLOCKS:  Icons - Help and Close with Tooltip -->
-    <Icon class="fixed top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
-    <div v-if="tooltip" class="fixed z-50 flex flex-col h-screen w-screen items-center justify-center backdrop-blur-lg">
+    <Icon class="absolute top-3 right-3 hover:cursor-help size-8"  name="carbon:information-square-filled" @click="tooltip = !tooltip" v-if="!intro"/>
+    <div v-if="tooltip" class="absolute z-50 flex flex-col h-screen w-screen items-center justify-center backdrop-blur-xl brightness-125">
       <button>
-        <Icon name="line-md:close-circle-filled" class="fixed top-3 right-6 size-8" @click="tooltip = !tooltip" />
+      <Icon name="line-md:close-circle-filled" class="fixed top-3 right-6 size-8" @click="tooltip = !tooltip" />
       </button>
-      <p class="text-xl shadow-xl">This project is a visualisation of a queue system using Redis as the backend. The Redis implementation is custom and does not use any external libraries.</p>
+      <div class="w-11/12 shadow-2xl">
+      <p class="text-2xl md:text-3xl">This project is a visualisation of a queue system using Redis as the backend. The Redis implementation is custom and does not use any external libraries.</p>
       <br>
-      <p class="text-lg shadow-xl"><span class="underline">Bundle:</span> The term bundle is used to refer to 'tasks' that are added to the queue system. A bundle can be a single task or a group of tasks. Though, this functionality is not exposed to the frontend here.</p>
+      <p class="text-base md:text-xl"><span class="underline">Bundle:</span> The term bundle is used to refer to 'tasks' that are added to the queue system. A bundle can be a single task or a group of tasks depending upon the actual implementation.</p>
+      <p class="text-base md:text-xl"><span class="underline">Redis Like Backend</span>:
+        The backend of this project mimics Redis functionality by providing endpoints for basic queue operations. The backend ensures that tasks are managed in FIFO (First In, First Out) order, reflecting the standard behavior of a queue.
+      </p>
+      <p class="text-base md:text-xl"><span class="underline">API Endpoints</span>:
+        <code class="bg-gray-950 font-mono text-sm md:text-base"><br>POST /api/queue/add</code> : Add a task to the queue.
+        <ul class="list-disc ml-4 text-sm md:text-base">
+        <li>Request Body:<br><code>{ taskId: string, taskData: string }</code></li>
+        <li>Response:<br><code>{ status: number, message: string }</code></li>
+        </ul>
+
+        <code class="bg-gray-950 font-mono text-sm md:text-base"><br>GET /api/queue/fetch</code> : Fetch all tasks from the queue.
+        <ul class="list-disc ml-4 text-sm md:text-base">
+        <li>Response:<br><code>{ status: number, message: string, tasks: [{ taskId: string, taskData: string }], oldestTask: { taskId: string, taskData: string }, queueSize: number }</code></li>
+        </ul>
+        <code class="bg-gray-950 font-mono text-sm md:text-base"><br>POST /api/queue/process</code> : Process tasks from the queue.
+        <ul class="list-disc ml-4 text-sm md:text-base">
+        <li>Request Body:<br><code>{ batchSize: number }</code></li>
+        <li>Response:<br><code>{ status: number, message: string, processedTasks: [{ taskId: string, taskData: string }] }</code></li>
+        </ul>
+        <code class="bg-gray-950 font-mono text-sm md:text-base"><br>GET /api/health</code> : Quick status of the queue system.
+        <ul class="list-disc ml-4 text-sm md:text-base">
+        <li>Response:<br><code>{ status: number, message: string, data: { taskCount: number, message: string, redisConnectionStatus: boolean }, error?: Error }</code></li>
+        </ul>
+        <code class="bg-gray-950 font-mono text-sm md:text-base"><br>GET /api/queue/clear</code> : Clear the queue.
+        <ul class="list-disc ml-4 text-sm md:text-base">
+        <li>Response:<br><code>{ status: number, message: string }</code></li>
+        </ul>
+      </p>
+      </div>
     </div>
     <!-- FIXED BLOCKS:  End of Icons - Help and Close with Tooltip -->
 
@@ -38,72 +68,16 @@
           </ClientOnly>
         </p>
       </div>
-      <div key="main" v-else class="">
+      <div key="main" v-else class="flex flex-col items-center justify-center">
         <div class="flex flex-col items-center justify-center p-4 pt-10">
           <p class="text-5xl font-bold">Queue System</p>
           <p class="text-2xl font-thin">with custom Redis Implementation</p>
         </div>
       
 
-          <div class="flex flex-col items-center justify-center min-h-[75vh]">
+          <div class="flex flex-col items-center justify-center min-h-[75vh] lg:w-5/6 w-9/12">
 
-            <p class="text-xl">Queue Size: {{ queueSize }}</p>
-            <!-- <div class="conveyor-belt">
-              <div class="bundle" v-for="(task, index) in tasks" :key="task.key" :style="{ right: `${index * 120}px` }">
-                  {{ task.data }}
-              </div>
-            </div>
-
-            <div class="c-belt">
-              <div class="c-belt-item" v-for="(task, index) in tasks" :key="task.key" :style="{ right: `${index * 120}px` }">
-                  {{ task.key }}
-              </div>
-            </div>
-
-            <div class="cb">
-              <div 
-                v-for="(task, index) in tasks" 
-                :key="task.key" 
-                :style="{
-                  transform: `rotate(${(360 / tasks.length) * index}deg) translateX(100px)`
-                }"
-                class="cb-item"
-              >
-                {{ task.data }}
-              </div>
-            </div>
-
-            <div class="conveyor-container">
-              <div class="conveyor-track">
-                <div 
-                  v-for="(task, index) in tasks" 
-                  :key="task.key" 
-                  :style="{ transform: `translateX(${-index * 120}px)` }"
-                  class="task-item"
-                >
-                  {{ task.data }}
-                </div>
-              </div>
-            </div>
-
-            <div class="queue-system">
-              <div class="belt-container">
-                <div class="gear left"></div>
-                <div class="belt-track">
-                  <div 
-                    v-for="(task, index) in tasks" 
-                    :key="task.key" 
-                    :style="{ transform: `translateX(${-index * 120}px)` }"
-                    class="task-bundle"
-                  >
-                    {{ task.data }}
-                  </div>
-                </div>
-                <div class="gear right"></div>
-              </div>
-            </div> -->
-
-            <div class="lg:w-2/3 w-5/6 h-[200px] mx-auto my-8 relative bg-[#1a1a1a] rounded-xl shadow-2xl">
+            <div class="w-full h-[200px] mx-auto my-8 relative bg-[#1a1a1a] rounded-xl shadow-2xl">
               <!-- Left Gear -->
               <div :class="['absolute w-[60px] h-[60px] bg-transparent rounded-full top-1/3 -left-[35px] z-10', `${psing? 'animate-spin': ''}`]">
                 <Icon name="mynaui:wheel-solid" class="w-16 h-16" />
@@ -133,25 +107,46 @@
               </div>
               
               <!-- Right Gear -->
-              <div :class="['absolute w-[60px] h-[60px] bg-transparent rounded-full top-1/3 -right-[30px] z-10', `${psing? 'animate-spin': ''}`]">
-                <Icon name="mynaui:wheel-solid" class="w-16 h-16" />
+              <div :class="['absolute w-[40px] md:w-[60px] h-[40px] md:h-[60px] bg-transparent rounded-full top-1/3 -right-[20px] md:-right-[30px] z-10', `${psing? 'animate-spin': ''}`]">
+                <Icon name="mynaui:wheel-solid" class="w-12 md:w-16 h-12 md:h-16" />
               </div>
             </div>
 
-            <div>
-              <!-- {{ tasks }} -->
-              Oldest Task: {{ oldestTask }}<br>
-              Health Status: {{ healthStatus }}
-              <br>
-              <B text="Add Bundle" @click="addTask" />
-              <!-- <B text="Fetch Tasks" @click="fetchTasks" /> -->
-              <!-- fetch tasks from api does not need a button -->
-              <B text="Process Bundle" bg="bg-green-400" @click="batchSize === -1 ? processAllTasks() : processTasks()" />
-              <B text="Health Check" @click="healthCheck" />
-              <B text="Clear Queue" @click="clearQueue" />
-              <!-- <B text="stats" /> -->
-              <br>
-              <input type="number" v-model="batchSize" class="border border-gray-400 rounded-md p-2 bg-gray-950" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+              <div>
+                <div class="flex flex-wrap justify-center md:justify-start">
+                  <B text="Add Bundle" @click="addTask" />
+                  <B text="Clear Queue" @click="clearQueue" bg="bg-red-500" />
+                </div>
+                <div class="flex flex-col items-center md:items-start">
+                  <B text="Process Bundle" bg="bg-green-400" @click="processTasks()" />
+                  <label for="batchSize" class="sr-only">Batch Size</label>
+                  <input 
+                    id="batchSize" 
+                    placeholder="No of Bundles to process" 
+                    type="number" 
+                    v-model="batchSize" 
+                    class="w-full md:w-auto border border-gray-400 rounded-md p-2 bg-gray-950 text-sm md:text-base my-2" 
+                  />
+                </div>
+                <div class="text-center md:text-left">
+                  <B text="Process All Bundles" bg="bg-yellow-400" @click="processAllTasks()" />
+                </div>
+              </div>
+              
+              <div class="mt-4 md:mt-0">
+                <div class="bg-gray-900 rounded-lg p-3 md:p-4 w-full">
+                  <p class="text-xl md:text-2xl text-center font-bold mb-2">Queue Health</p>
+                  <div class="space-y-1 text-sm md:text-base">
+                    <p>Queue Size: {{ queueSize }}</p>
+                    <p v-if="queueSize!=0">Oldest Task: Bundle {{ oldestTask?.taskId }}</p>
+                    <p v-else>Oldest Task: None</p>
+                    <p class="opacity-40 text-xs md:text-sm">(First Preference is given to oldest task. (FIFO))</p>
+                    <p>Status: {{ healthStatus.message }}</p>
+                    <p>Redis Connection Status: {{ healthStatus?.redisConnectionStatus ? 'Connected' : 'Disconnected' }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -174,9 +169,6 @@
 <script setup lang="ts">
 const containerWidth = ref(0)
 
-onMounted(() => {
-  containerWidth.value = window.innerWidth
-})
 const psing = ref(false)
 const count = ref(0)
 const intro = ref(true)
@@ -187,13 +179,15 @@ onMounted(() => {
     intro.value = false
   }, 3500)
   fetchTasks()
+  healthCheck()
+  containerWidth.value = window.innerWidth
 })
 
 //main logic
 const tasks = ref<{ key: string; data: any; }[]>([])
 const queueSize = ref(0)
 const oldestTask = ref()
-const batchSize = ref(-1)
+const batchSize = ref()
 
 type healthStatus = {
   status: number,
@@ -232,6 +226,7 @@ const addTask = async () => {
       body: taskData
     })
     fetchTasks()
+    healthCheck()
     count.value++
   } catch (error) {
     console.error(error)
@@ -250,6 +245,7 @@ const processTasks = async () => {
         }
       })
       fetchTasks()
+      healthCheck()
       psing.value = false
     
   } catch (error) {
@@ -267,6 +263,7 @@ const processAllTasksBackend = async () => {
         }
       })
       await fetchTasks()
+      await healthCheck()
     
   } catch (error) {
     console.error(error)
@@ -311,6 +308,7 @@ const clearQueue = async () => {
       method: 'GET'
     })
     fetchTasks()
+    healthCheck()
   } catch (error) {
     console.error(error)
   }
